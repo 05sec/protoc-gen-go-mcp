@@ -370,8 +370,12 @@ func (g *fileGenerator) Generate() {
 			if meth.Desc.IsStreamingClient() || meth.Desc.IsStreamingServer() {
 				continue
 			}
+			methodName := string(meth.Desc.FullName())
+			if nameSplit := strings.Split(string(meth.Desc.FullName()), "."); len(nameSplit) >= 2 {
+				methodName = strings.Join(nameSplit[len(nameSplit)-2:], "_")
+			}
 			tool := mcp.Tool{
-				Name:        MangleHeadIfTooLong(strings.ReplaceAll(string(meth.Desc.FullName()), ".", "_"), 64),
+				Name:        MangleHeadIfTooLong(methodName, 64),
 				Description: cleanComment(string(meth.Comments.Leading)),
 			}
 
